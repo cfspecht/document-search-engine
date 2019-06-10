@@ -382,7 +382,7 @@ class HashTableLinear:
         return self.num_collisions
 
     def keys(self):
-        """ Returns a list of keys in the hash table
+        """ Returns a list of keys in the hash table, necessary for Proj4: Document Search Engine
         Returns:
             list: list of keys
         """
