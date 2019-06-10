@@ -1,2 +1,2 @@
-# document-search-engine
-CPE 202 Project 4
+# Project 4: Document Search Engine
+CPE 202
