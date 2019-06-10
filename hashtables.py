@@ -381,6 +381,13 @@ class HashTableLinear:
         """
         return self.num_collisions
 
+    def keys(self):
+        """ Returns a list of keys in the hash table
+        Returns:
+            list: list of keys
+        """
+        return [atuple[0] for atuple in self.table if atuple]
+
 
 class HashTableQuadratic:
     """ Hash table implementation using Quadratic Probing as collision resolution
