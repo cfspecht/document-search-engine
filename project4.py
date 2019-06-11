@@ -37,7 +37,18 @@ class SearchEngine:
         Returns:
             list: a list of strings read from a file
         """
-        pass
+        # open file
+        with open(infile, "r") as f:
+            lines = f.readlines() # looks like ["line 1 here", "line 2 here", "line 3 here"]
+
+        raw_words = []
+        for line in lines:
+            split_line = line.split(" ") # split line looks like ["line", "1", "here"]
+            raw_words.extend(split_line)
+
+        # return new list with all words that aren't stop words
+        return [word for word in raw_words if word not in self.stopwords]
+
 
     def parse_words(self, lines):
         """ Split strings into words, convert words to lower cases and remove newline characters,
