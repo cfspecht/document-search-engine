@@ -21,7 +21,22 @@ class TestSearchEngine(unittest.TestCase):
         test_searchengine = SearchEngine("project4", stop_table)
         test_list = test_searchengine.read_file("data_structure.txt")
         
-        print(test_list)
+        # print(test_list)
+
+    def test_parse_words(self):
+
+        # creates stop_word hash table
+        stop_table = HashTable()
+        stop_table = import_stopwords("stop_words.txt", stop_table)
+
+        # get list of important words
+        test_searchengine = SearchEngine("project4", stop_table)
+        test_lines = test_searchengine.read_file("data_structure.txt")
+
+        # parse words
+        test_words = test_searchengine.parse_words(test_lines)
+
+        print(test_words)
 
 
 def test_main():

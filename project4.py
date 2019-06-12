@@ -40,14 +40,7 @@ class SearchEngine:
         # open file
         with open(infile, "r") as f:
             lines = f.readlines() # looks like ["line 1 here", "line 2 here", "line 3 here"]
-
-        raw_words = []
-        for line in lines:
-            split_line = line.split(" ") # split line looks like ["line", "1", "here"]
-            raw_words.extend(split_line)
-
-        # return new list with all words that aren't stop words
-        return [word for word in raw_words if word not in self.stopwords]
+        return lines
 
 
     def parse_words(self, lines):
@@ -58,7 +51,20 @@ class SearchEngine:
         Returns:
             list: a list of words
         """
-        pass
+        raw_words = []
+        for line in lines:
+            split_line = line.split(" ") # split line looks like ["line", "1", "here"]
+            raw_words.extend(split_line)
+        
+        # create new list with all words that aren't stop words
+        # remove newline characters, convert to lowercase
+        filtered_words = [word.rstrip().lower() for word in raw_words if word not in self.stopwords]
+
+        return filtered_words
+
+
+
+
 
     def count_words(self, filename, words):
         """ Count words in a file and store the frequency of each word in the term_freqs hash table.
