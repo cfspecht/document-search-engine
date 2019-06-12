@@ -75,19 +75,21 @@ class SearchEngine:
         # iterate through each word
         for word in words:
 
-            # if word is already in term_freqs, skip it since it has already been processed
-            if self.term_freqs.contains(word):
-                continue # this should be the right command, it continues with next iteration of the loop
-
             # calculate frequency of this word in this document
             word_frequency = words.count(word) # returns number of occurences of this word in words
 
-            # create new frequency hashtable for each term ("doc1", frequency)
-            freq_hashtable = HashTable()
-            freq_hashtable.put(filename, word_frequency)
+            # if word is already in term_freqs
+            if self.term_freqs.contains(word):
+                # add new ("doc1", freq) pair to term_freqs[word] (which is the lower hashtable)
+                self.term_freqs[word].put(filename, word_frequency)
 
-            # put this newly created hash table into term_freqs hash table ("term1", freq_hashtable)
-            self.term_freqs.put(word, freq_hashtable)
+            # if word is not already in term_freqs
+            else:
+                # create new frequency hashtable for each term ("doc1", frequency)
+                freq_hashtable = HashTable()
+                freq_hashtable.put(filename, word_frequency)
+                # put this newly created hash table into term_freqs hash table ("term1", freq_hashtable)
+                self.term_freqs.put(word, freq_hashtable)
 
     def index_files(self, directory):
         """ Index all text files in a given directory
