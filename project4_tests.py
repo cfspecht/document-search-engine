@@ -36,7 +36,26 @@ class TestSearchEngine(unittest.TestCase):
         # parse words
         test_words = test_searchengine.parse_words(test_lines)
 
-        print(test_words)
+        # print(test_words)
+
+    def test_count_words(self):
+
+        # creates stop_word hash table
+        stop_table = HashTable()
+        stop_table = import_stopwords("stop_words.txt", stop_table)
+
+        # get list of important words
+        test_searchengine = SearchEngine("project4", stop_table)
+        test_lines = test_searchengine.read_file("test.txt")
+
+        # parse words
+        test_words = test_searchengine.parse_words(test_lines)
+
+        test_searchengine.count_words("test.txt", test_words)
+
+        print(test_searchengine.doc_length)
+
+        print(test_searchengine.term_freqs)
 
 
 def test_main():

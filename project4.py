@@ -42,7 +42,6 @@ class SearchEngine:
             lines = f.readlines() # looks like ["line 1 here", "line 2 here", "line 3 here"]
         return lines
 
-
     def parse_words(self, lines):
         """ Split strings into words, convert words to lower cases and remove newline characters,
         exclude stopwords
@@ -62,10 +61,6 @@ class SearchEngine:
 
         return filtered_words
 
-
-
-
-
     def count_words(self, filename, words):
         """ Count words in a file and store the frequency of each word in the term_freqs hash table.
         Words should not contain stopwords. Also store the total count of words contained in the
@@ -74,7 +69,25 @@ class SearchEngine:
             filename (str): the file name
             words (list): a list of words
         """
-        pass
+        # store total count of words in the doc_length hash table
+        self.doc_length.put(filename, len(words))
+
+        # iterate through each word
+        for word in words:
+
+            # if word is already in term_freqs, skip it since it has already been processed
+            if self.term_freqs.contains(word):
+                continue # this should be the right command, it continues with next iteration of the loop
+
+            # calculate frequency of this word in this document
+            word_frequency = words.count(word) # returns number of occurences of this word in words
+
+            # create new frequency hashtable for each term ("doc1", frequency)
+            freq_hashtable = HashTable()
+            freq_hashtable.put(filename, word_frequency)
+
+            # put this newly created hash table into term_freqs hash table ("term1", freq_hashtable)
+            self.term_freqs.put(word, freq_hashtable)
 
     def index_files(self, directory):
         """ Index all text files in a given directory
