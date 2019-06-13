@@ -18,10 +18,13 @@ class TestSearchEngine(unittest.TestCase):
         stop_table = import_stopwords("stop_words.txt", stop_table)
 
         # get list of important words
-        test_searchengine = SearchEngine("project4", stop_table)
+        test_searchengine = SearchEngine("/mnt/c/College/cpe202/project4/document-search-engine/", stop_table)
+
+        """
         test_list = test_searchengine.read_file("data_structure.txt")
         
         # print(test_list)
+        """
 
     def test_parse_words(self):
 
@@ -30,13 +33,16 @@ class TestSearchEngine(unittest.TestCase):
         stop_table = import_stopwords("stop_words.txt", stop_table)
 
         # get list of important words
-        test_searchengine = SearchEngine("project4", stop_table)
+        test_searchengine = SearchEngine("/mnt/c/College/cpe202/project4/document-search-engine/", stop_table)
+
+        """
         test_lines = test_searchengine.read_file("data_structure.txt")
 
         # parse words
         test_words = test_searchengine.parse_words(test_lines)
 
         # print(test_words)
+        """
 
     def test_count_words(self):
 
@@ -45,7 +51,9 @@ class TestSearchEngine(unittest.TestCase):
         stop_table = import_stopwords("stop_words.txt", stop_table)
 
         # get list of important words
-        test_searchengine = SearchEngine("project4", stop_table)
+        test_searchengine = SearchEngine("/mnt/c/College/cpe202/project4/document-search-engine/", stop_table)
+
+        """
         test_lines = test_searchengine.read_file("test.txt")
 
         # parse words
@@ -56,6 +64,18 @@ class TestSearchEngine(unittest.TestCase):
         print(test_searchengine.doc_length)
 
         print(test_searchengine.term_freqs)
+        """
+
+    def test_index_files(self):
+
+        # creates stop_word hash table
+        stop_table = HashTable()
+        stop_table = import_stopwords("stop_words.txt", stop_table)
+
+        test_searchengine = SearchEngine("/mnt/c/College/cpe202/project4/document-search-engine/", stop_table)
+        print(test_searchengine.doc_length)
+        print(test_searchengine.term_freqs)
+
 
 
 def test_main():

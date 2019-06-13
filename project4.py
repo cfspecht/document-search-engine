@@ -7,6 +7,7 @@ Spring 2019
 
 from hashtables import import_stopwords
 from hashtables import HashTableLinear as HashTable
+import os
 
 
 class SearchEngine:
@@ -81,7 +82,7 @@ class SearchEngine:
             # if word is already in term_freqs
             if self.term_freqs.contains(word):
                 # add new ("doc1", freq) pair to term_freqs[word] (which is the lower hashtable)
-                self.term_freqs[word].put(filename, word_frequency)
+                self.term_freqs[word][1].put(filename, word_frequency)
 
             # if word is not already in term_freqs
             else:
@@ -96,7 +97,29 @@ class SearchEngine:
         Args:
             directory (str) : the path of a directory
         """
-        pass
+        # get a list of files in the directory
+        file_list = os.listdir(directory)
+
+        # for each item in file_list, item is a filename
+        for item in file_list:
+
+            # construct full path of each file
+            path = os.path.join(directory, item)
+
+            # if item is not a file, skip it
+            if not os.path.isfile(path) or item == "stop_words.txt":
+                continue
+
+            # split path into file extension and the rest
+            parts = os.path.splitext(item)
+
+            # only process text files
+            if parts[1] == ".txt":
+
+                # process it
+                item_lines = self.read_file(item)
+                item_words = self.parse_words(item_lines)
+                self.count_words(item, item_words)
 
     # SEARCHING ====================================================================================
 
