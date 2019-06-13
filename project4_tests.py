@@ -74,7 +74,7 @@ class TestSearchEngine(unittest.TestCase):
 
         test_searchengine = SearchEngine("/mnt/c/College/cpe202/project4/document-search-engine/", stop_table)
         print(test_searchengine.doc_length)
-        print(test_searchengine.term_freqs)
+        # print(test_searchengine.term_freqs)
 
 
 

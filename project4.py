@@ -7,7 +7,7 @@ Spring 2019
 
 from hashtables import import_stopwords
 from hashtables import HashTableLinear as HashTable
-import os
+import os, math
 
 
 class SearchEngine:
@@ -123,6 +123,52 @@ class SearchEngine:
 
     # SEARCHING ====================================================================================
 
+    def get_wf(self, term_frequency):
+        """ Computes the weighted frequency
+        Args:
+            term_frequency (float): term frequency
+        Returns:
+            float: the weighted frequency
+        """
+        if term_frequency > 0:
+            wf = 1 + math.log(term_frequency)
+        else:
+            wf = 0
+        return wf
+
+    def get_scores(self, terms):
+        """ Creates list of scores for each file in corpus. 
+        The score = (weighted frequency / total word count in file)
+        Compute the score for each term in a query and sum all the scores.
+        Args:
+            terms (list): a list of strings
+        Returns:
+            list: a list of tuples, each containing the filename and its relevancy score
+        """
+        # scores = HashMap()
+        # for each query term "term"
+            # fetch a hash table of "term" from self.term_freqs
+            # for each file in the hash table, add weighted frequency to scores[file]
+        # for each file in scores, do scores[file] /= self.doc_length[file]
+        # return scores, which is a list of tuples
+
+    def rank(self, scores):
+        """ Ranks files in the descending order of relevancy
+        Args:
+            scores (list): list of tuples of (filename, score)
+        Returns:
+            list: a list of filenames sorted in descending order of relevancy
+        """
+        pass
+
+    def search(self, query):
+        """ Search for the query terms in files
+        Args:
+            query (str): query input
+        Returns:
+            list: a list of files in descending order of relevancy
+        """
+        pass
 
 def main():
     """ Entry point of the program
