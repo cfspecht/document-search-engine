@@ -4,10 +4,11 @@ CPE 202-09
 Spring 2019
 """
 
-
+import os
+import math
+import sys
 from hashtables import import_stopwords
 from hashtables import HashTableLinear as HashTable
-import os, math, sys
 
 
 class SearchEngine:
@@ -39,8 +40,8 @@ class SearchEngine:
             list: a list of strings read from a file
         """
         # open file
-        with open(infile, "r") as f:
-            lines = f.readlines() # looks like ["line 1 here", "line 2 here", "line 3 here"]
+        with open(infile, "r") as filepointer:
+            lines = filepointer.readlines() # looks like ["line 1 here", "line 2 here"]
         return lines
 
     def parse_words(self, lines):
@@ -55,7 +56,7 @@ class SearchEngine:
         for line in lines:
             split_line = line.split(" ") # split line looks like ["line", "1", "here"]
             raw_words.extend(split_line)
-        
+
         # create new list with all words that aren't stop words
         filtered_words = [word.rstrip().lower() for word in raw_words if word not in self.stopwords]
 
@@ -88,7 +89,7 @@ class SearchEngine:
                 # create new frequency hashtable for each term ("doc1", frequency)
                 freq_hashtable = HashTable()
                 freq_hashtable.put(filename, word_frequency)
-                # put this newly created hash table into term_freqs hash table ("term1", freq_hashtable)
+                # put this newly created hash table into term_freqs hash table
                 self.term_freqs.put(word, freq_hashtable)
 
     def index_files(self, directory):
@@ -130,13 +131,13 @@ class SearchEngine:
             float: the weighted frequency
         """
         if term_frequency > 0:
-            wf = 1 + math.log(term_frequency)
+            weighted_freq = 1 + math.log(term_frequency)
         else:
-            wf = 0
-        return wf
+            weighted_freq = 0
+        return weighted_freq
 
     def get_scores(self, terms):
-        """ Creates list of scores for each file in corpus. 
+        """ Creates list of scores for each file in corpus.
         The score = (weighted frequency / total word count in file)
         Compute the score for each term in a query and sum all the scores.
         Args:
@@ -188,7 +189,7 @@ class SearchEngine:
         Returns:
             list: a list of filenames sorted in descending order of relevancy
         """
-        return sorted(scores, key=lambda x:x[1], reverse=True)
+        return sorted(scores, key=lambda x: x[1], reverse=True)
 
     def search(self, query):
         """ Search for the query terms in files
@@ -222,7 +223,7 @@ class SearchEngine:
 
 
 def main():
-    """ Entry point of the program 
+    """ Entry point of the program
     User enters "q" to quit program, and "s:{query} to search
     Upon searching, a list of relevant files in descending order is displayed
     """
@@ -237,7 +238,7 @@ def main():
     search_engine = SearchEngine(dir_name, stop_table)
 
     # enter an infinite loop
-    print("Enter 'q' to exit program" )
+    print("Enter 'q' to exit program")
     print("Enter 's:{query}' to search")
     while True:
 
