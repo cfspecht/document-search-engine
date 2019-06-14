@@ -147,7 +147,6 @@ class SearchEngine:
         # scores = HashMap()
         score_table = HashTable() # contains tuples of (filename, weighted_frequency)
 
-        # print(filtered_query_list)
         for query_term in terms:
 
             # fetch a hash table of "term" from self.term_freqs
@@ -223,9 +222,10 @@ class SearchEngine:
 
 
 def main():
-    """ Entry point of the program
+    """ Entry point of the program 
+    User enters "q" to quit program, and "s:{query} to search
+    Upon searching, a list of relevant files in descending order is displayed
     """
-
     # takes a directory name as its command line argument
     dir_name = sys.argv[1]
 
