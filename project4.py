@@ -7,7 +7,7 @@ Spring 2019
 
 from hashtables import import_stopwords
 from hashtables import HashTableLinear as HashTable
-import os, math
+import os, math, sys
 
 
 class SearchEngine:
@@ -47,7 +47,7 @@ class SearchEngine:
         """ Split strings into words, convert words to lower cases and remove newline characters,
         exclude stopwords
         Args:
-            lines (list): a list of strings
+            lines (list): a list of lists of strings
         Returns:
             list: a list of words
         """
@@ -57,7 +57,6 @@ class SearchEngine:
             raw_words.extend(split_line)
         
         # create new list with all words that aren't stop words
-        # remove newline characters, convert to lowercase
         filtered_words = [word.rstrip().lower() for word in raw_words if word not in self.stopwords]
 
         return filtered_words
@@ -111,15 +110,15 @@ class SearchEngine:
                 continue
 
             # split path into file extension and the rest
-            parts = os.path.splitext(item)
+            parts = os.path.splitext(item) # maybe change item stuff here to path
 
             # only process text files
             if parts[1] == ".txt":
 
                 # process it
-                item_lines = self.read_file(item)
+                item_lines = self.read_file(path)
                 item_words = self.parse_words(item_lines)
-                self.count_words(item, item_words)
+                self.count_words(path, item_words)
 
     # SEARCHING ====================================================================================
 
@@ -141,16 +140,47 @@ class SearchEngine:
         The score = (weighted frequency / total word count in file)
         Compute the score for each term in a query and sum all the scores.
         Args:
-            terms (list): a list of strings
+            terms (list): a list of strings, raw input string from user query
         Returns:
             list: a list of tuples, each containing the filename and its relevancy score
         """
         # scores = HashMap()
-        # for each query term "term"
+        score_table = HashTable() # contains tuples of (filename, weighted_frequency)
+
+        # print(filtered_query_list)
+        for query_term in terms:
+
             # fetch a hash table of "term" from self.term_freqs
+            query_term_table = self.term_freqs[query_term][1]
+
             # for each file in the hash table, add weighted frequency to scores[file]
+            qt_table_keys = query_term_table.keys()
+            for key in qt_table_keys: # key is a file name
+                weighted_frequency = self.get_wf(query_term_table[key][1])
+                if weighted_frequency != 0:
+
+                    # if this is the second query_term
+                    if score_table.contains(key):
+
+                        # new frequency + old frequency
+                        old_freq = score_table[key][1]
+                        updated_freq = weighted_frequency + old_freq
+                        score_table.put(key, updated_freq)
+
+                    # if score_table[key] is empty, use put (if first query_term)
+                    else:
+                        score_table.put(key, weighted_frequency)
+
         # for each file in scores, do scores[file] /= self.doc_length[file]
-        # return scores, which is a list of tuples
+        score_table_keys = score_table.keys()
+        score_list = []
+        for key in score_table_keys: # key is a filename
+            normalized_score = score_table[key][1] / self.doc_length[key][1]
+            score_table[key] = normalized_score
+            score_list.append(score_table[key])
+
+        # return scores, which is a list of tuples neglecting terms with frequencies of 0
+        return score_list
 
     def rank(self, scores):
         """ Ranks files in the descending order of relevancy
@@ -159,31 +189,67 @@ class SearchEngine:
         Returns:
             list: a list of filenames sorted in descending order of relevancy
         """
-        pass
+        return sorted(scores, key=lambda x:x[1], reverse=True)
 
     def search(self, query):
         """ Search for the query terms in files
         Args:
-            query (str): query input
+            query (str): query input, "user input goes here"
         Returns:
             list: a list of files in descending order of relevancy
         """
-        pass
+        # parse words
+        filtered_query = self.parse_words([query])
+
+        # remove duplicate words using a hash table
+        word_table = HashTable()
+        for word in filtered_query:
+            word_table.put(word, word)
+        word_table_keys = word_table.keys()
+        parsed_query_terms = [] # changes from string to a list
+        # add all words from hash table to list using keys()
+        for key in word_table_keys:
+            parsed_query_terms.append(word_table[key][0])
+
+        # pass query terms to get_scores()
+        tuples = self.get_scores(parsed_query_terms)
+
+        # pass resulting list of tuples to rank()
+        results = self.rank(tuples)
+
+        # rank's result will be displayed in descending order on screen
+        for a_tuple in results:
+            print(a_tuple[0])
+
 
 def main():
     """ Entry point of the program
     """
+
     # takes a directory name as its command line argument
+    dir_name = sys.argv[1]
+
+    # creates stop_word hash table
+    stop_table = HashTable()
+    stop_table = import_stopwords("stop_words.txt", stop_table)
+
     # create an instance of SearchEngine by passing the directory name
+    search_engine = SearchEngine(dir_name, stop_table)
+
     # enter an infinite loop
+    print("Enter 'q' to exit program" )
+    print("Enter 's:{query}' to search")
+    while True:
+
         # prompt user for input
-            # if input is "q"
-                # exit loop and end session
-            # if input is "s:insert search query here"
-                # convert search query terms to lowercase if necessary
-                # search for relevant documents and print a list of file names in descending order
-                # of relevancy
-    pass
+        raw_query = str(input("Enter query: "))
+
+        # if input is "q"
+        if raw_query == "q":
+            break
+
+        elif raw_query[0:2] == "s:":
+            search_engine.search(raw_query[2:])
 
 
 if __name__ == "__main__":
